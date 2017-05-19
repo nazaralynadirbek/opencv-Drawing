@@ -21,3 +21,10 @@
 !**/images/*.png
 !**/videos/*.mp4
 !**/videos/*.avi
+
+# Local files/folders
+.DS_Store
+/CMakeFiles
+cmake_install.cmake
+CMakeCache.txt
+Makefile
