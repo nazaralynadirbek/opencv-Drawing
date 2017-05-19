@@ -1,0 +1,23 @@
+# ignore code::blocks projects files and executables
+**/bin/
+**/obj/
+**/*.cbp
+**/*.depend
+**/*.layout
+
+# ignore clion project files and executables
+**/cmake-build-debug/
+**/cmake-build-release/
+**/.idea/
+
+# ignore jpg and png images, mp4 videos
+**/*.jpg
+**/*.jpg
+**/*.mp4
+**/*.avi
+
+# except images in images and videos in videos
+!**/images/*.jpg
+!**/images/*.png
+!**/videos/*.mp4
+!**/videos/*.avi
