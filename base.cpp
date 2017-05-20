@@ -7,16 +7,18 @@ using namespace std;
 using namespace cv;
 
 // Global variables
+bool touched = false;
 VideoCapture cap;
 
 // Mats
 Mat src;
 Mat out;
-IplImage* drw;
 
 // Coordinates
 int x;
 int y;
+int xRect;
+int yRect;
 
 int counter = 0;
 
@@ -24,9 +26,6 @@ int counter = 0;
 
 void init() {
   cap.open(0);
-
-  cap.set(CV_CAP_PROP_FRAME_WIDTH, 640);
-  cap.set(CV_CAP_PROP_FRAME_HEIGHT, 480);
 }
 
 float innerAngle(float px1, float py1, float px2, float py2, float cx1, float cy1) {
@@ -101,12 +100,31 @@ void convex(vector<vector<Point> > contours, size_t largestContour) {
       }
 
       // Coordinates of right-top corner
-      x = boundingBox.x + boundingBox.width / 2;
+      x = boundingBox.x;
       y = boundingBox.y;
 
       // Num of fingers
       counter = validPoints.size();
     }
+  }
+}
+
+void handler() {
+  circle(src, Point(x, y), 10, Scalar(0, 167, 255), 8, 0);
+
+  if (counter == 0 || counter == 1) {
+    if (x >= xRect && x <= xRect + 100) {
+      if (y >= yRect && y <= yRect + 100) {
+        touched = true;
+      }
+    }
+  } else {
+    touched = false;
+  }
+
+  if (touched) {
+    xRect = x;
+    yRect = y;
   }
 }
 
@@ -131,39 +149,36 @@ void contours() {
   convex(contours, largestContour);
 }
 
-int draw() {
-  circle(src, Point(x, y), 10, Scalar(0, 125, 125), -1, 8, 0);
-
-  string word = "Number is equal to " + to_string(counter);
-  putText(src, word, Point(10, 50), FONT_HERSHEY_PLAIN, 1.5, Vec3b(255,255,255), 1);
-}
-
 int main() {
   init();
 
-  namedWindow("Video Capture", WINDOW_AUTOSIZE);
-  namedWindow("Object Detection", WINDOW_AUTOSIZE);
+  namedWindow("Video", WINDOW_AUTOSIZE);
+  namedWindow("Threshold", WINDOW_AUTOSIZE);
+
 
   for (;;) {
     cap >> src;
+
+    rectangle(src, Rect(xRect, yRect, 100, 100), Scalar(0, 0, 255), -1, 8, 0);
 
     if (src.empty()) {
       break;
     }
 
     // Detect black objects
-    cvtColor(src, out, CV_BGR2HSV);
-    inRange(out, Scalar(0, 0, 0, 0), Scalar(180, 255, 30, 0), out);
+    // cvtColor(src, out, CV_BGR2HSV);
+    inRange(src, Scalar(0, 0, 0, 0), Scalar(180, 255, 30, 0), out);
+    medianBlur(out, out, 5);
 
     // Find object with biggest area and draw contours
     contours();
 
-    // Draw
-    draw();
+    // handler
+    handler();
 
     // Show
-    imshow("Video Capture", src);
-    imshow("Object Detection", out);
+    imshow("Video", src);
+    imshow("Threshold", out);
 
     if (waitKey(1) == 27) break;
   }
