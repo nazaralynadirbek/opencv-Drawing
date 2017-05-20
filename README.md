@@ -34,4 +34,4 @@ make
 [Poster](pdf/poster.pdf)
 
 ### Presentation
-[Presentation](pdf/presentation.pdf)
+[Presentation](https://docs.google.com/presentation/d/1QufAJ-pEK-7wxdNEVwV2hGzXShk2E0JE-EIqVMZN1NY/edit?usp=sharing)
