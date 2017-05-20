@@ -7,6 +7,7 @@ using namespace std;
 using namespace cv;
 
 // Global variables
+Scalar rectColor = Scalar(0, 0, 255);
 bool touched = false;
 VideoCapture cap;
 
@@ -112,14 +113,16 @@ void convex(vector<vector<Point> > contours, size_t largestContour) {
 void handler() {
   circle(src, Point(x, y), 10, Scalar(0, 167, 255), 8, 0);
 
-  if (counter == 0 || counter == 1) {
-    if (x >= xRect && x <= xRect + 100) {
-      if (y >= yRect && y <= yRect + 100) {
+  if (x >= xRect && x <= xRect + 100) {
+    if (y >= yRect && y <= yRect + 100) {
+      if (counter == 0 || counter == 1) {
         touched = true;
+      } else if (counter == 2) {
+        rectColor = Scalar(rand() % 255, rand() % 255, rand() % 255);
+      } else {
+        touched = false;
       }
     }
-  } else {
-    touched = false;
   }
 
   if (touched) {
@@ -159,7 +162,10 @@ int main() {
   for (;;) {
     cap >> src;
 
-    rectangle(src, Rect(xRect, yRect, 100, 100), Scalar(0, 0, 255), -1, 8, 0);
+    rectangle(src, Rect(xRect, yRect, 100, 100), rectColor, -1, 8, 0);
+
+    string word = "Number of fingers : " + to_string(counter);
+    putText(src, word, Point(10, 50), FONT_HERSHEY_PLAIN, 1.5, Vec3b(255,255,255), 1);    
 
     if (src.empty()) {
       break;
