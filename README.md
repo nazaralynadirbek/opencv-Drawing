@@ -28,7 +28,7 @@ make
 ```
 
 ### Demo
-[Demo](vimeo.com)
+[Demo](https://vimeo.com/218250063)
 
 ### Poster
 [Poster](pdf/poster.pdf)
